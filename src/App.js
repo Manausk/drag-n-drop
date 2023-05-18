@@ -16,7 +16,20 @@ function App() {
     setNotes(JSON.parse(array));
   }, []);
 
-  console.log(notes);
+  useEffect(() => {
+    let array = localStorage.getItem("binnedItems");
+
+    if (array) {
+      setBinnedItems(JSON.parse(array));
+      for (let i = 0; i < notes.length; i++) {
+        for (let j = 0; j < binnedItems.length; j++) {
+          if (notes[i] === binnedItems[j]) {
+            notes.splice(i, 1);
+          }
+        }
+      }
+    }
+  }, [notes]);
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -27,10 +40,11 @@ function App() {
         <Note
           key={new Date().getTime() + Math.floor(Math.random() * 1000)}
           note={item}
+          binnedItems={binnedItems}
         />
       ))}
 
-      <Bin />
+      <Bin binnedItems={binnedItems} />
     </DndProvider>
   );
 }
